@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
-import { createData, updateData, deleteData, getDataById, getAllData } from "../../sqlite/data-dao";
+import {
+  createData,
+  updateData,
+  deleteData,
+  getDataById,
+  getAllData,
+} from "../../sqlite/data-dao";
 
 export function handleCreateData(req: Request, res: Response): void {
   const data = req.body;
@@ -23,10 +29,7 @@ export function handleUpdateData(req: Request, res: Response): void {
       res.status(200).send(response);
     })
     .catch((error) => {
-      console.error(
-        `Error while updating data with id ${data.uuid}`,
-        error
-      );
+      console.error(`Error while updating data with id ${data.uuid}`, error);
       res.status(500).send({
         error: `Error while updating bookable with id ${data.uuid}`,
       });
@@ -75,3 +78,5 @@ export function handleGetAllData(req: Request, res: Response): void {
       res.status(500).send({ error: "Error while getting all data" });
     });
 }
+
+// complete & incomlete todo

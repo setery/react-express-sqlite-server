@@ -1,16 +1,17 @@
 import { db } from "./client";
 
 export interface Data {
-  uuid: number;
+  uuid?: number;
   content: string;
+  complete: number;
 }
 
 export async function createData(data: Data): Promise<Data | undefined> {
   // TODO: add validations
   const sql = `INSERT INTO data(content)
-                VALUES(?)`;
+                VALUES(?,?)`;
   try {
-    db.run(sql, [data.content]); // insert data
+    db.run(sql, [data.content, 0]); // insert data (0 means false on complete status)
     return data;
   } catch (error) {
     console.error("Error occurred during JSON parsing:", error);
@@ -19,7 +20,7 @@ export async function createData(data: Data): Promise<Data | undefined> {
 }
 
 export async function updateData(data: Data): Promise<Data | undefined> {
-  const sql = `UPDATE data SET content = ${data.content} WHERE uuid = ${data.uuid}`;
+  const sql = `UPDATE data SET content = ${data.content} complete=${data.complete} WHERE uuid = ${data.uuid}`;
   // TODO: Add input validation
   try {
     db.run(sql);
@@ -43,31 +44,33 @@ export async function getDataById(
   uuid: Data["uuid"]
 ): Promise<Data | undefined> {
   // TODO: Add input validation
-  const sql = `DELETE FROM data WHERE uuid = ${uuid}`;
-  try {
-    const result = db.all(sql, [], (err: any, rows: any) => {
+  const sql = `SELECT * FROM data WHERE uuid = ${uuid}`;
+
+  return new Promise<Data | undefined>((resolve, reject) => {
+    db.all(sql, [], (err: any, row: Data) => {
       if (err) {
-        return console.error(err.message);
+        console.error(err.message);
+        reject(err);
+      } else {
+        resolve(row);
       }
     });
-    return result as unknown as Data;
-  } catch (error) {
-    console.error("Error occurred during JSON parsing:", error);
-    return undefined;
-  }
+  });
 }
 
 export async function getAllData(): Promise<Data[] | undefined> {
   // TODO: Add input validation
   const sql = `SELECT * FROM data`;
-  try {
+  return new Promise<Data[] | undefined>((resolve, reject) => {
     db.all(sql, [], (err: any, rows: Data[]) => {
       if (err) {
-        return console.error(err.message);
+        console.error(err.message);
+        reject(err);
+      } else {
+        resolve(rows);
       }
-      return rows;
     });
-  } catch (error) {
-    return Promise.reject("Error occurred during JSON parsing: " + error);
-  }
+  });
 }
+
+// do complete & incomplete todo
