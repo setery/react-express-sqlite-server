@@ -1,4 +1,9 @@
+/*import config from config;
+
+const PORT = config.get<number>("server.port"); // get port from config
+
 require("dotenv").config();
+
 const express = require("express");
 
 const app = express();
@@ -18,6 +23,6 @@ app.post("/name", (req,res)=>{
     }
 });
 
-app.listen(process.env.PORT, ()=>{
-    console.log(`Server running on port ${process.env.PORT}`);
-});
+app.listen(PORT, ()=>{
+    console.log(`Server running on port ${PORT}`);
+});*/
