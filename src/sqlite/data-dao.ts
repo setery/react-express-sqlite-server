@@ -8,7 +8,7 @@ export interface Data {
 
 export async function createData(data: Data): Promise<Data | undefined> {
   // TODO: add validations
-  const sql = `INSERT INTO data(content)
+  const sql = `INSERT INTO data(content, complete)
                 VALUES(?,?)`;
   try {
     db.run(sql, [data.content, 0]); // insert data (0 means false on complete status)
@@ -18,7 +18,7 @@ export async function createData(data: Data): Promise<Data | undefined> {
     return undefined;
   }
 }
-
+ // update data
 export async function updateData(data: Data): Promise<Data | undefined> {
   const sql = `UPDATE data SET content = ${data.content} complete=${data.complete} WHERE uuid = ${data.uuid}`;
   // TODO: Add input validation
