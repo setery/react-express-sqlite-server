@@ -5,20 +5,24 @@ export interface Data {
   content: string;
   complete: number;
 }
+export interface Current {
+  completeToDos: Data[];
+  incompleteToDos: Data[];
+}
 
 export async function createData(data: Data): Promise<Data | undefined> {
   // TODO: add validations
-  const sql = `INSERT INTO data(content, complete)
-                VALUES(?,?)`;
+  console.log(data);
+  const sql = `INSERT INTO data(content, complete) VALUES(?,?)`;
   try {
-    db.run(sql, [data.content, 0]); // insert data (0 means false on complete status)
+    db.run(sql, [data.content, 1]); // insert data (0 means false on complete status)
     return data;
   } catch (error) {
     console.error("Error occurred during JSON parsing:", error);
     return undefined;
   }
 }
- // update data
+// update data
 export async function updateData(data: Data): Promise<Data | undefined> {
   const sql = `UPDATE data SET content = ${data.content} complete=${data.complete} WHERE uuid = ${data.uuid}`;
   // TODO: Add input validation
@@ -73,4 +77,38 @@ export async function getAllData(): Promise<Data[] | undefined> {
   });
 }
 
-// do complete & incomplete todo
+export async function getCurrentData(): Promise<Current> {
+  // TODO: Add input validation
+  const sqlComplete = `SELECT * FROM data WHERE complete = ?`;
+  const sqlIncomplete = `SELECT * FROM data WHERE complete = ?`;
+  let currentComplete: Data[] = [];
+  let currentIncomplete: Data[] = [];
+
+  return new Promise<Current>((resolve, reject) => {
+    db.all(sqlIncomplete, [1], (err: any, rowsIncomplete: Data[]) => {
+      if (err) {
+        console.error(err.message);
+        reject(err);
+      } else {
+        if (rowsIncomplete) {
+          currentIncomplete = rowsIncomplete;
+        }
+        db.all(sqlComplete, [0], (err: any, rowsComplete: Data[]) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            if (rowsComplete) {
+              currentComplete = rowsComplete;
+            }
+            const current: Current = {
+              completeToDos: currentComplete,
+              incompleteToDos: currentIncomplete,
+            };
+            resolve(current);
+          }
+        });
+      }
+    });
+  });
+}

@@ -3,8 +3,8 @@ import {
   handleCreateData,
   handleUpdateData,
   handleDeleteData,
-  handleGetDataById,
   handleGetAllData,
+  handleGetCurrentData,
 } from "./handlers";
 
 const router = express.Router();
@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/", handleCreateData);
 router.put("/:uuid", handleUpdateData);
 router.delete("/:uuid", handleDeleteData);
-router.get("/:uuid", handleGetDataById);
 router.get("/", handleGetAllData);
+router.get("/current", handleGetCurrentData);
 
 export default router;
