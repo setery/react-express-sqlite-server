@@ -15,7 +15,7 @@ export async function createData(data: Data): Promise<Data | undefined> {
   console.log(data);
   const sql = `INSERT INTO data(content, complete) VALUES(?,?)`;
   try {
-    db.run(sql, [data.content, 1]); // insert data (0 means false on complete status)
+    db.run(sql, [data.content, 0]); // insert data (0 means false on complete status)
     return data;
   } catch (error) {
     console.error("Error occurred during JSON parsing:", error);
