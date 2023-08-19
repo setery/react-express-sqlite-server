@@ -85,7 +85,7 @@ export async function getCurrentData(): Promise<Current> {
   let currentIncomplete: Data[] = [];
 
   return new Promise<Current>((resolve, reject) => {
-    db.all(sqlIncomplete, [1], (err: any, rowsIncomplete: Data[]) => {
+    db.all(sqlIncomplete, [0], (err: any, rowsIncomplete: Data[]) => {
       if (err) {
         console.error(err.message);
         reject(err);
@@ -93,7 +93,7 @@ export async function getCurrentData(): Promise<Current> {
         if (rowsIncomplete) {
           currentIncomplete = rowsIncomplete;
         }
-        db.all(sqlComplete, [0], (err: any, rowsComplete: Data[]) => {
+        db.all(sqlComplete, [1], (err: any, rowsComplete: Data[]) => {
           if (err) {
             console.error(err.message);
             reject(err);
