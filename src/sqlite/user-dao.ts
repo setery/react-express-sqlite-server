@@ -21,7 +21,7 @@ export async function createUser(user: User): Promise<User | undefined> {
   // TODO: add validations
   // Existing email //Register field
 
-  const sql = `INSERT INTO users(email, password, name)
+  const sql = `INSERT INTO user(email, password, name)
                 VALUES(?,?,?)`;
   //hash password
   const hashedPassword = await bycrypt.hash(user.password, 12);
@@ -38,7 +38,7 @@ export async function createUser(user: User): Promise<User | undefined> {
 
 export async function getUserAuth(user: User): Promise<Token> {
   // TODO: Add input validation
-  const sql = `SELECT * FROM users WHERE email = ? LIMIT 1`;
+  const sql = `SELECT * FROM user WHERE email = ? LIMIT 1`;
 
   return new Promise<Token>((resolve, reject) => {
     db.all(sql, [user.email], async (err: any, row: User[]) => {
@@ -61,6 +61,8 @@ export async function getUserAuth(user: User): Promise<Token> {
           const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
             expiresIn: "7d",
           });
+          const hashedPassword = await bycrypt.hash(user.password, 12);
+          user.password = hashedPassword
           const response: Token = { token, user };
           resolve(response);
         } else {
@@ -75,11 +77,11 @@ export async function getUserByEmail(
   email: User["email"]
 ): Promise<User | undefined> {
   // TODO: Add input validation
-  const sql = `SELECT * FROM users WHERE email = ? LIMIT 1`;
+  const sql = `SELECT * FROM user WHERE email = ? LIMIT 1`;
   return new Promise<User | undefined>((resolve, reject) => {
     db.all(sql, [email], (err: any, row: User[]) => {
       if (err) {
-        reject("email not found"+ err);
+        reject("email not found" + err);
       } else {
         resolve(row[0]);
       }
