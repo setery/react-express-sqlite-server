@@ -1,5 +1,9 @@
 # service
 
+1. Need to create .env file and add the next code, as example:
+`PORT=7003`
+`JWT_SECRET=secretpassword123456789`
+
 ## Usage
 
 1. `nvm use` (to specify node version Requires NVM)
