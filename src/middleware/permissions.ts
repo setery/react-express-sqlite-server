@@ -1,4 +1,3 @@
-import * as dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { User, getUserByEmail } from "../sqlite/user-dao";

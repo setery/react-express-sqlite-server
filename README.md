@@ -2,13 +2,9 @@
 
 ## Usage
 
-1. `npm install` (to install dependencies)
-2. `npm run start` or `npm run server` (to start HTTP server)
-
-## Advance Usage
-
-- `npm run compile` (to transpile TypeScript into JavaScript)
-- `npm run compile:watch` (will transpile TypeScript into JavaScript as it watches for changes)
+1. `nvm use` (to specify node version Requires NVM)
+2. `npm install` (to install dependencies)
+3. `npm run start` or `npm run server` (to start HTTP server)
 
 # To improve: Could use:
 1. Install nvm (Node Version Manager)
