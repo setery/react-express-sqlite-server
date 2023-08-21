@@ -31,9 +31,9 @@ export async function createData(data: Data, user_uuid: User["uuid"]): Promise<D
 }
 
 export async function updateData(data: Data, user_uuid: User["uuid"]): Promise<Data | undefined> {
+  
   const sqlSearch = `SELECT * FROM data WHERE uuid = ? AND user_uuid = ?`;
-
-  const sqlUpdate = `UPDATE data SET content = ? complete = ? WHERE uuid = ? AND user_uuid = ?`;
+  const sqlUpdate = `UPDATE data SET content = ? WHERE uuid = ? AND user_uuid = ?`;
 
   // TODO: Add input validation
   return new Promise<Data>((resolve, reject) => {
@@ -43,11 +43,7 @@ export async function updateData(data: Data, user_uuid: User["uuid"]): Promise<D
         reject(err);
       } else {
         if (row[0]) {
-          db.run(sqlUpdate, [data.content, data.complete, data.uuid, user_uuid]).catch(
-            (error: any) => {
-              reject(error);
-            }
-          );
+          db.run(sqlUpdate, [data.content, data.uuid, user_uuid])
           resolve(data);
         }
       }
@@ -93,7 +89,6 @@ export async function updateDataToIncomplete(
   return new Promise<Data>((resolve, reject) => {
     db.all(sqlSearch, [data.uuid, user_uuid], (err: any, row: Data[]) => {
       if (err) {
-        console.error(err.message);
         reject(err);
       } else {
         if (!row[0]) {

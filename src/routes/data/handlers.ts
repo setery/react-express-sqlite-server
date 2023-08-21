@@ -14,7 +14,6 @@ export function handleCreateData(req: Request, res: Response): void {
   const user_uuid = req.user?.uuid
   createData(data,user_uuid)
     .then((response) => {
-      console.log("Success creating data", response);
       res.status(201).send(response);
     })
     .catch((error) => {
@@ -29,7 +28,6 @@ export function handleUpdateData(req: Request, res: Response): void {
   data.uuid = req.body.uuid || req.params.uuid;
   updateData(data,user_uuid)
     .then((response) => {
-      console.log("Success updating data", response);
       res.status(200).send(response);
     })
     .catch((error) => {
@@ -45,9 +43,8 @@ export function handleDeleteData(req: Request, res: Response): void {
   const user_uuid = req.user?.uuid
 
   deleteData(dataId,user_uuid)
-    .then((response) => {
-      console.log("Success deleting data", response);
-      res.status(200).send(response);
+    .then(() => {
+      res.status(200).send({success: true});
     })
     .catch((error) => {
       console.error(`Error while deleting data with id ${dataId}`, error);
@@ -61,7 +58,6 @@ export function handleGetAllData(req: Request, res: Response): void {
   const user_uuid = req.user?.uuid
   getAllData(user_uuid)
     .then((response) => {
-      console.log("Success get all data", response);
       res.status(200).send(response);
     })
     .catch((error) => {
@@ -74,7 +70,6 @@ export function handleGetCurrentData(req: Request, res:Response): void{
   const user_uuid = req.user?.uuid;
   getCurrentData(user_uuid)
     .then((response) => {
-      console.log("Success get all data", response);
       res.status(200).send({incomplete: response.incompleteToDos, complete: response.completeToDos});
     })
     .catch((error) => {
@@ -89,7 +84,6 @@ export function handleUpdateComplete(req: Request, res:Response): void{
   data.uuid = req.body.uuid || req.params.uuid;
   updateDataToComplete(data,user_uuid)
     .then((response) => {
-      console.log("Success update data to complete", response);
       res.status(200).send(response);
     })
     .catch((error) => {
@@ -104,7 +98,6 @@ export function handleUpdateIncomplete(req: Request, res:Response): void{
   data.uuid = req.body.uuid || req.params.uuid;
   updateDataToIncomplete(data,user_uuid)
     .then((response) => {
-      console.log("Success update data to incomplete", response);
       res.status(200).send(response);
     })
     .catch((error) => {

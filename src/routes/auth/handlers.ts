@@ -1,23 +1,30 @@
 import { Request, Response } from "express";
 import { createUser, getUserAuth } from "../../sqlite/user-dao";
+import validateRegisterInput from "../../validations/registerValidations";
 
 export function handleCreateUser(req: Request, res: Response): void {
-  const user = req.body;
-  createUser(user)
-    .then((response) => {
-      console.log("Success creating user", response);
-      res.status(201).send(response);
-    })
-    .catch((error) => {
-      console.error("Error while creating user", error);
-      res.status(500).send({ error: error.message });
-    });
+  const { errors, isValid } = validateRegisterInput(req.body);
+  if (!isValid) {
+    res.status(400).send(errors);
+  } else {
+    const user = req.body;
+    createUser(user)
+      .then((response) => {
+        res.cookie("access-token", response.token, {
+          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          httpOnly: true,
+        });
+        res.status(201).send(response);
+      })
+      .catch((error) => {
+        res.status(500).send({ error: error});
+      });
+  }
 }
 export function handleLoginUser(req: Request, res: Response): void {
   const user = req.body;
   getUserAuth(user)
     .then((response) => {
-      console.log("Success login", response);
       res.cookie("access-token", response.token, {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         httpOnly: true,
@@ -25,17 +32,15 @@ export function handleLoginUser(req: Request, res: Response): void {
       res.status(200).send(response);
     })
     .catch((error) => {
-      console.error("Error while login", error);
-      res.status(500).send({ error: error.message });
+      res.status(500).send({ error: error });
     });
 }
 
 export function handleLogout(req: Request, res: Response): void {
   try {
     res.clearCookie("access-token");
-    res.send({success: true})
+    res.send({ success: true });
   } catch (err) {
-    console.log(err);
     res.status(500).send(err);
   }
 }
